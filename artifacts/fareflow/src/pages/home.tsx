@@ -11,9 +11,12 @@ import {
   geocode, 
   calculateDistance, 
   runSimulation, 
+  generateFareHistory,
   SimulationResult, 
+  FareHistoryPoint,
   Location 
 } from "@/lib/simulation";
+import { FareHistoryChart } from "@/components/fare-history-chart";
 import { 
   MapPin, 
   Navigation, 
@@ -49,6 +52,7 @@ export default function Home() {
   const [destLoc, setDestLoc] = useState<Location | null>(null);
   
   const [simResult, setSimResult] = useState<SimulationResult | null>(null);
+  const [fareHistory, setFareHistory] = useState<FareHistoryPoint[]>([]);
 
   const handleCompare = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +83,7 @@ export default function Home() {
       
       const result = runSimulation(dist);
       setSimResult(result);
+      setFareHistory(generateFareHistory(dist, result.surgeMultiplier));
     } catch (err) {
       setError("An error occurred during calculation.");
     } finally {
@@ -326,6 +331,34 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+
+              {/* Fare History Chart */}
+              {fareHistory.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="space-y-4"
+                  data-testid="section-fare-history"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold tracking-tight">Price History</h2>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        Simulated fare trends across all providers — past 60 minutes
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-xs px-3 py-1 border-border/60">
+                      <Activity className="h-3 w-3 mr-1.5" /> Live Simulation
+                    </Badge>
+                  </div>
+                  <Card className="glass-panel border-border/50">
+                    <CardContent className="pt-6 pb-2 pr-4">
+                      <FareHistoryChart data={fareHistory} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
 
               {/* Alternative Transport */}
               <div className="space-y-4 pt-4">

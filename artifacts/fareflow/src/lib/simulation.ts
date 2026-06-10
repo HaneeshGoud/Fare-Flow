@@ -77,6 +77,56 @@ export async function geocode(address: string): Promise<Location | null> {
   return null;
 }
 
+export interface FareHistoryPoint {
+  time: string;       // e.g. "10:32"
+  minutesAgo: number;
+  Uber: number;
+  Ola: number;
+  Rapido: number;
+  "Namma Yatri": number;
+}
+
+export function generateFareHistory(distance: number, currentSurgeMultiplier: number): FareHistoryPoint[] {
+  const now = new Date();
+  const points: FareHistoryPoint[] = [];
+
+  // Noise seeds per provider so curves diverge naturally
+  const noiseSeeds = { Uber: 0.07, Ola: 0.09, Rapido: 0.06, "Namma Yatri": 0.08 };
+
+  for (let i = 60; i >= 0; i -= 5) {
+    const t = new Date(now.getTime() - i * 60 * 1000);
+    const h = t.getHours();
+
+    let timeMult = 1.0;
+    if (h >= 8 && h < 10) timeMult = 1.3;
+    else if (h >= 18 && h < 21) timeMult = 1.4;
+    else if (h >= 23 || h < 5) timeMult = 1.2;
+
+    // Blend historical multiplier toward the current one as we approach "now"
+    const weight = i / 60; // 1 at 60 min ago, 0 at now
+    const blendedMult = timeMult * weight + currentSurgeMultiplier * (1 - weight);
+
+    const point: FareHistoryPoint = {
+      time: `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`,
+      minutesAgo: i,
+      Uber: 0,
+      Ola: 0,
+      Rapido: 0,
+      "Namma Yatri": 0,
+    };
+
+    PROVIDERS.forEach((p) => {
+      const noise = 1 + (Math.random() - 0.5) * noiseSeeds[p.name as keyof typeof noiseSeeds];
+      point[p.name as keyof Pick<FareHistoryPoint, "Uber" | "Ola" | "Rapido" | "Namma Yatri">] =
+        Math.round(p.base + distance * p.perKm * blendedMult * noise);
+    });
+
+    points.push(point);
+  }
+
+  return points;
+}
+
 export function runSimulation(distance: number): SimulationResult {
   const currentHour = new Date().getHours();
   let timeMultiplier = 1.0;
