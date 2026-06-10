@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "FareFlow"
+version = "1.0.0"
+id = "artifacts/fareflow"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18265
+
+[services.development]
+run = "pnpm --filter @workspace/fareflow run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fareflow", "run", "build" ]
+publicDir = "artifacts/fareflow/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18265"
+BASE_PATH = "/"

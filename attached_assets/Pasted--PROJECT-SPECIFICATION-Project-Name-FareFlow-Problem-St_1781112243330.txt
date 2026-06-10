@@ -1,0 +1,603 @@
+# PROJECT SPECIFICATION
+
+## Project Name
+
+**FareFlow* 
+
+---
+
+## Problem Statement
+
+Daily commuters waste time opening multiple ride-hailing apps such as Uber, Ola, Rapido, and Namma Yatri to compare fares before booking a ride.
+
+Users also have no visibility into whether current prices are likely to increase or decrease in the next few minutes due to surge pricing.
+
+FareFlow solves this by aggregating fare estimates into a single dashboard, identifying the cheapest option, predicting future surge conditions, and providing intelligent booking recommendations. 
+
+---
+
+## Project Goal
+
+Build a modern AI-powered ride comparison platform that:
+
+1. Accepts pickup and destination locations.
+2. Calculates ride distance.
+3. Simulates fares for multiple ride providers.
+4. Compares all fares in one dashboard.
+5. Highlights the cheapest ride.
+6. Predicts future surge pricing.
+7. Recommends whether the user should book now or wait.
+8. Suggests alternative transport methods.
+9. Provides a clean modern user experience suitable for a hackathon demo.
+
+---
+
+## Tech Stack
+
+Frontend:
+
+* Next.js 15
+* React
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+
+Maps:
+
+* Leaflet
+* OpenStreetMap
+* Nominatim Geocoding API
+
+AI Layer:
+
+* Rule-based recommendation engine
+* Simulated surge prediction model
+
+State Management:
+
+* React Hooks
+
+Deployment:
+
+* Vercel
+
+---
+
+## Application Structure
+
+### Home Page
+
+Hero section containing:
+
+Title:
+
+FareFlow 
+
+Subtitle:
+
+Compare ride fares, predict surge pricing, and book smarter.
+
+Fields:
+
+Pickup Location
+
+Destination Location
+
+Compare Button
+
+---
+
+## User Flow
+
+### Step 1
+
+User enters:
+
+Pickup Location
+
+Destination Location
+
+Example:
+
+GITAM Hyderabad
+
+Gachibowli
+
+---
+
+### Step 2
+
+System converts addresses into coordinates using Nominatim API.
+
+---
+
+### Step 3
+
+System calculates route distance.
+
+Distance should be displayed.
+
+Example:
+
+18.2 km
+
+---
+
+### Step 4
+
+Fare simulation engine calculates provider prices.
+
+---
+
+## Fare Simulation Logic
+
+Create separate providers:
+
+Uber
+
+Ola
+
+Rapido
+
+Namma Yatri
+
+---
+
+### Uber Formula
+
+Base Fare = 50
+
+Per Km = 12
+
+Formula:
+
+fare = 50 + distance × 12 + surge
+
+---
+
+### Ola Formula
+
+Base Fare = 45
+
+Per Km = 13
+
+Formula:
+
+fare = 45 + distance × 13 + surge
+
+---
+
+### Rapido Formula
+
+Base Fare = 35
+
+Per Km = 11
+
+Formula:
+
+fare = 35 + distance × 11 + surge
+
+---
+
+### Namma Yatri Formula
+
+Base Fare = 40
+
+Per Km = 10
+
+Formula:
+
+fare = 40 + distance × 10 + surge
+
+---
+
+## Surge Engine
+
+Generate dynamic surge score.
+
+Inputs:
+
+Current Hour
+
+Day Of Week
+
+Traffic Level
+
+Weather Condition
+
+---
+
+### Time Rules
+
+Morning Peak
+
+8 AM – 10 AM
+
+Surge Multiplier = 1.3
+
+---
+
+Evening Peak
+
+6 PM – 9 PM
+
+Surge Multiplier = 1.4
+
+---
+
+Late Night
+
+11 PM – 5 AM
+
+Surge Multiplier = 1.2
+
+---
+
+Normal Hours
+
+Multiplier = 1.0
+
+---
+
+## Weather Simulation
+
+Sunny:
+1.0
+
+Cloudy:
+1.1
+
+Rain:
+1.4
+
+Heavy Rain:
+1.7
+
+---
+
+## Traffic Simulation
+
+Low:
+1.0
+
+Medium:
+1.2
+
+High:
+1.5
+
+---
+
+## Final Surge Formula
+
+surge =
+timeMultiplier ×
+weatherMultiplier ×
+trafficMultiplier
+
+---
+
+## Fare Cards
+
+Display four cards.
+
+Each card must show:
+
+Provider Name
+
+Current Fare
+
+ETA
+
+Surge Level
+
+---
+
+Example
+
+Uber
+
+₹265
+
+ETA: 4 min
+
+Surge: Medium
+
+---
+
+## Cheapest Ride Detection
+
+Automatically identify lowest fare.
+
+Highlight card.
+
+Show badge:
+
+BEST DEAL
+
+---
+
+## Savings Calculation
+
+Example:
+
+Cheapest Fare:
+₹220
+
+Highest Fare:
+₹300
+
+Savings:
+₹80
+
+Display prominently.
+
+---
+
+## AI Recommendation Engine
+
+Generate intelligent recommendation.
+
+---
+
+Example Logic
+
+If predicted future fare is lower:
+
+Recommendation:
+
+Wait 15 Minutes
+
+Expected Savings:
+₹30
+
+---
+
+If predicted future fare is higher:
+
+Recommendation:
+
+Book Now
+
+Prices likely to increase.
+
+---
+
+## Surge Prediction Module
+
+Simulate next 15 minutes.
+
+Predict:
+
+Increasing
+
+Stable
+
+Decreasing
+
+---
+
+Example
+
+Current Fare:
+₹250
+
+Predicted Fare:
+₹220
+
+Trend:
+Decreasing
+
+Confidence:
+82%
+
+---
+
+## AI Insight Card
+
+Display:
+
+Best Ride
+
+Savings
+
+Current Surge
+
+Future Prediction
+
+Recommendation
+
+Confidence Score
+
+---
+
+Example
+
+AI Insights
+
+Best Ride:
+Rapido
+
+Save:
+₹50
+
+Current Surge:
+Medium
+
+Future Trend:
+Decreasing
+
+Recommendation:
+Wait 15 Minutes
+
+Confidence:
+82%
+
+---
+
+## Alternative Transport Module
+
+Display:
+
+Metro
+
+Bus
+
+Walking
+
+---
+
+Example
+
+Metro:
+₹40
+
+Travel Time:
+25 min
+
+---
+
+Bus:
+₹20
+
+Travel Time:
+35 min
+
+---
+
+Walk:
+2.2 km
+
+Travel Time:
+28 min
+
+---
+
+## Map Section
+
+Display:
+
+Pickup Marker
+
+Destination Marker
+
+Route Line
+
+Distance
+
+---
+
+Use:
+
+Leaflet
+
+OpenStreetMap
+
+---
+
+## Dashboard Layout
+
+Top:
+Search Form
+
+Middle:
+Map
+
+Below:
+Fare Comparison Cards
+
+Below:
+AI Insights
+
+Below:
+Alternative Transport Suggestions
+
+---
+
+## UI Design
+
+Theme:
+
+Modern
+
+Clean
+
+Startup Style
+
+Use:
+
+Rounded corners
+
+Glassmorphism
+
+Gradient backgrounds
+
+Smooth animations
+
+Hover effects
+
+Loading skeletons
+
+Responsive layout
+
+Mobile support
+
+Desktop support
+
+---
+
+## Color Palette
+
+Primary:
+Blue
+
+Secondary:
+Purple
+
+Success:
+Green
+
+Warning:
+Orange
+
+Background:
+Dark mode compatible
+
+---
+
+## Required Components
+
+LocationSearchForm
+
+MapView
+
+FareComparisonGrid
+
+FareCard
+
+CheapestRideBanner
+
+SurgePredictionCard
+
+AIInsightsCard
+
+TransportAlternatives
+
+Navbar
+
+Footer
+
+---
+
+## Project Deliverable
+
+The application should feel like a real startup MVP and be fully functional with simulated provider pricing.
+
+The architecture must be designed in a way that real Uber, Ola, Rapido, and Namma Yatri APIs can be integrated later without changing the frontend.
+
+Focus on:
+
+* Excellent UI
+* End-to-end functionality
+* Clear user value
+* Strong hackathon presentation quality
