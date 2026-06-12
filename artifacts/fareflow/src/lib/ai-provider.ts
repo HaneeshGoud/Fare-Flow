@@ -34,50 +34,83 @@ export function saveAISettings(settings: AISettings): void {
   localStorage.setItem(STORAGE_KEYS.geminiKey, settings.geminiKey);
 }
 
+async function extractErrorMessage(res: Response, prefix: string): Promise<never> {
+  let detail = `${res.status} ${res.statusText}`.trim();
+  try {
+    const body = await res.json();
+    const msg =
+      body?.error?.message ??
+      body?.message ??
+      body?.error ??
+      null;
+    if (typeof msg === "string" && msg) detail = msg;
+  } catch {
+    // body was not JSON — keep status text
+  }
+  throw new Error(`${prefix}: ${detail}`);
+}
+
 async function callOllama(endpoint: string, model: string, prompt: string): Promise<string> {
   const url = endpoint.replace(/\/$/, "") + "/api/chat";
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model,
-      messages: [{ role: "user", content: prompt }],
-      stream: false,
-    }),
-  });
-  if (!res.ok) throw new Error(`Ollama error: ${res.status} ${res.statusText}`);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        stream: false,
+      }),
+    });
+  } catch (err) {
+    throw new Error(
+      `Could not reach Ollama at ${endpoint}. Make sure it is running and OLLAMA_ORIGINS=* is set.`
+    );
+  }
+  if (!res.ok) await extractErrorMessage(res, "Ollama");
   const data = await res.json();
   return data.message?.content ?? data.response ?? "";
 }
 
 async function callOpenAI(apiKey: string, prompt: string): Promise<string> {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 300,
-    }),
-  });
-  if (!res.ok) throw new Error(`OpenAI error: ${res.status} ${res.statusText}`);
+  let res: Response;
+  try {
+    res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 300,
+      }),
+    });
+  } catch (err) {
+    throw new Error("Network error reaching OpenAI. Check your internet connection.");
+  }
+  if (!res.ok) await extractErrorMessage(res, "OpenAI");
   const data = await res.json();
   return data.choices?.[0]?.message?.content ?? "";
 }
 
 async function callGemini(apiKey: string, prompt: string): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Gemini error: ${res.status} ${res.statusText}`);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    });
+  } catch (err) {
+    throw new Error("Network error reaching Gemini. Check your internet connection.");
+  }
+  if (!res.ok) await extractErrorMessage(res, "Gemini");
   const data = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 }

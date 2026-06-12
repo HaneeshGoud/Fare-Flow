@@ -52,9 +52,16 @@ export function AIChatPanel({ simResult }: AIChatPanelProps) {
       const answer = await askAI(question, context);
       setMessages((prev) => [...prev, { role: "assistant", content: answer }]);
     } catch (err) {
-      const errMsg = err instanceof Error && err.message === "NO_PROVIDER"
-        ? t("ai.noProvider")
-        : t("ai.error");
+      let errMsg: string;
+      if (err instanceof Error) {
+        if (err.message === "NO_PROVIDER") {
+          errMsg = t("ai.noProvider");
+        } else {
+          errMsg = err.message;
+        }
+      } else {
+        errMsg = t("ai.error");
+      }
       setMessages((prev) => [...prev, { role: "assistant", content: errMsg }]);
     } finally {
       setLoading(false);
