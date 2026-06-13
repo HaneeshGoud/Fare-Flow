@@ -96,8 +96,14 @@ async function callOpenAI(apiKey: string, prompt: string): Promise<string> {
   return data.choices?.[0]?.message?.content ?? "";
 }
 
+export async function askGemini(prompt: string): Promise<string> {
+  const settings = loadAISettings();
+  if (!settings.geminiKey) throw new Error("Gemini API key missing.");
+  return callGemini(settings.geminiKey, prompt);
+}
+
 async function callGemini(apiKey: string, prompt: string): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
   let res: Response;
   try {
     res = await fetch(url, {
