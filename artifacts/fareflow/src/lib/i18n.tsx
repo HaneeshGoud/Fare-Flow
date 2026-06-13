@@ -2,10 +2,17 @@ import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import en from "@/locales/en.json";
 import te from "@/locales/te.json";
+import hi from "@/locales/hi.json";
 
-export type Lang = "en" | "te";
+export type Lang = "en" | "te" | "hi";
 
-const translations: Record<Lang, Record<string, string>> = { en, te };
+export const LANG_OPTIONS: { code: Lang; flag: string; label: string }[] = [
+  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "hi", flag: "🇮🇳", label: "हिन्दी" },
+  { code: "te", flag: "🇮🇳", label: "తెలుగు" },
+];
+
+const translations: Record<Lang, Record<string, string>> = { en, te, hi };
 
 interface I18nContextValue {
   lang: Lang;
@@ -24,7 +31,8 @@ const STORAGE_KEY = "fareflow-language";
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored === "te" ? "te" : "en";
+    if (stored === "te" || stored === "hi") return stored;
+    return "en";
   });
 
   useEffect(() => {

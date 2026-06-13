@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useTheme } from "@/components/theme-provider";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, LANG_OPTIONS, type Lang } from "@/lib/i18n";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -124,15 +130,31 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLang(lang === "en" ? "te" : "en")}
-              className="text-xs font-medium px-3 h-8"
-              data-testid="button-lang-toggle"
-            >
-              {lang === "en" ? "తె" : "EN"}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs font-medium px-3 h-8 gap-1.5"
+                  data-testid="button-lang-toggle"
+                >
+                  {LANG_OPTIONS.find((l) => l.code === lang)?.flag}{" "}
+                  {LANG_OPTIONS.find((l) => l.code === lang)?.label}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[130px]">
+                {LANG_OPTIONS.map((l) => (
+                  <DropdownMenuItem
+                    key={l.code}
+                    onClick={() => setLang(l.code as Lang)}
+                    className={`gap-2 text-sm ${lang === l.code ? "font-semibold" : ""}`}
+                    data-testid={`lang-option-${l.code}`}
+                  >
+                    {l.flag} {l.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Link href="/settings">
               <Button

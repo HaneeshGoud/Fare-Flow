@@ -17,7 +17,13 @@ import {
   Moon,
 } from "lucide-react";
 import { loadAISettings, saveAISettings, type AIProvider, type AISettings } from "@/lib/ai-provider";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, LANG_OPTIONS, type Lang } from "@/lib/i18n";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/components/theme-provider";
 
 const PROVIDERS: { id: AIProvider; labelKey: string; color: string }[] = [
@@ -66,15 +72,31 @@ export default function Settings() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLang(lang === "en" ? "te" : "en")}
-              data-testid="button-lang-toggle"
-              className="text-xs font-medium"
-            >
-              {lang === "en" ? t("lang.te") : t("lang.en")}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs font-medium px-3 h-8 gap-1.5"
+                  data-testid="button-lang-toggle"
+                >
+                  {LANG_OPTIONS.find((l) => l.code === lang)?.flag}{" "}
+                  {LANG_OPTIONS.find((l) => l.code === lang)?.label}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[130px]">
+                {LANG_OPTIONS.map((l) => (
+                  <DropdownMenuItem
+                    key={l.code}
+                    onClick={() => setLang(l.code as Lang)}
+                    className={`gap-2 text-sm ${lang === l.code ? "font-semibold" : ""}`}
+                    data-testid={`lang-option-${l.code}`}
+                  >
+                    {l.flag} {l.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="ghost"
               size="icon"
