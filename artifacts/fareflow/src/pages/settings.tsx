@@ -250,7 +250,7 @@ export default function Settings() {
               <div className="flex items-center gap-2">
                 <Key className="h-4 w-4 text-purple-400" />
                 <h3 className="font-semibold">{t("settings.provider.gemini")}</h3>
-                <Badge variant="outline" className="ml-auto text-xs">Gemini 1.5 Flash</Badge>
+                <Badge variant="outline" className="ml-auto text-xs">Gemini 2.5 Flash</Badge>
               </div>
               <Separator />
 

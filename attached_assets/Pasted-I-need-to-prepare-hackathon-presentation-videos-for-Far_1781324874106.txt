@@ -1,0 +1,132 @@
+I need to prepare hackathon presentation videos for FareFlow.
+
+Please analyze the ENTIRE project and provide a detailed report in the following exact format.
+
+# 1. Project Overview
+
+* Project Name
+* One-line description
+* Main problem solved
+* Key features implemented
+
+# 2. Complete Tech Stack
+
+Frontend:
+
+* Framework
+* Language
+* Styling libraries
+* UI component libraries
+
+Backend:
+
+* Framework
+* APIs
+* Server architecture
+
+Database:
+
+* Database used
+* If no database, explicitly mention it
+
+Maps:
+
+* Which map library is used
+* Which geocoding service is used
+
+AI:
+
+* Which AI providers are supported
+* Ollama support details
+* OpenAI model names
+* Gemini model names
+* BYOK implementation details
+* AI features implemented
+
+Internationalization:
+
+* Which i18n library is used
+* Supported languages
+* How language switching works
+
+Deployment:
+
+* Hosting platform
+* Build tools
+
+# 3. Folder Structure
+
+Provide important folders and explain the purpose of each.
+
+# 4. Interesting Technical Features
+
+List:
+
+* Most technically challenging component
+* Most innovative component
+* Most impressive feature to demonstrate in a hackathon
+
+# 5. Target Users
+
+Who are the intended users?
+
+Examples:
+
+* Students
+* Daily commuters
+* Office employees
+* Travelers
+
+Explain:
+
+* Their pain points
+* How FareFlow solves them
+
+# 6. AI Development Usage
+
+During the development of FareFlow:
+
+* Which AI coding assistants were used?
+* Was Replit Agent used?
+* What tasks did AI help with?
+* Which features were AI-generated or AI-assisted?
+* Biggest productivity improvements?
+
+# 7. Accessibility
+
+Explain:
+
+* Dark mode support
+* Responsive design
+* Keyboard accessibility
+* Screen reader support if implemented
+
+# 8. Offline and Local AI
+
+Explain:
+
+* Is FareFlow offline-first?
+* Which features work offline?
+* How Ollama local inference is integrated?
+* How BYOK works?
+
+# 9. Collaboration Opportunities
+
+Suggest:
+
+* Other hackathon projects FareFlow could integrate with
+* APIs that could be integrated in the future
+* Benefits of integration
+
+# 10. Challenges and Learnings
+
+Explain:
+
+* Biggest development challenges
+* Technical learnings
+* Architectural decisions
+* Future improvements
+
+Please inspect the actual codebase and provide factual information only.
+
+If something is NOT implemented, explicitly say "Not implemented" instead of assuming.
